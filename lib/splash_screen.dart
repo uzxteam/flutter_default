@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'home_page.dart';
+import 'url_report_page.dart'; // UrlReportPage sahifasini import qiling
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -11,11 +13,28 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    _checkAppUrl();
+  }
+
+  Future<void> _checkAppUrl() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? appUrl = prefs.getString('app_url');
+
+    // 3 soniyadan keyin tekshiruv natijasiga ko'ra sahifaga yo'naltirish
     Timer(Duration(seconds: 3), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-      );
+      if (appUrl == null || appUrl.isEmpty) {
+        // Agar app_url mavjud bo'lmasa, UrlReportPage sahifasiga yo'naltiriladi
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => UrlReportPage()),
+        );
+      } else {
+        // Aks holda HomePage sahifasiga yo'naltiriladi
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+      }
     });
   }
 
