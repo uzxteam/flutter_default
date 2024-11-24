@@ -17,26 +17,32 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkAppUrl() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? appUrl = prefs.getString('app_url');
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? appUrl = prefs.getString('app_url');
 
-    // 3 soniyadan keyin tekshiruv natijasiga ko'ra sahifaga yo'naltirish
-    Timer(Duration(seconds: 3), () {
-      if (appUrl == null || appUrl.isEmpty) {
-        // Agar app_url mavjud bo'lmasa, UrlReportPage sahifasiga yo'naltiriladi
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => UrlReportPage()),
-        );
-      } else {
-        // Aks holda HomePage sahifasiga yo'naltiriladi
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-        );
-      }
-    });
+      print('app_url: $appUrl'); // Qiymatni log orqali tekshirish
+
+      Timer(Duration(seconds: 3), () {
+        if (appUrl == null || appUrl.isEmpty) {
+          print('Redirecting to UrlReportPage');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => UrlReportPage()),
+          );
+        } else {
+          print('Redirecting to HomePage');
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => HomePage()),
+          );
+        }
+      });
+    } catch (e) {
+      print('Error while checking app_url: $e');
+    }
   }
+
 
   @override
   Widget build(BuildContext context) {
